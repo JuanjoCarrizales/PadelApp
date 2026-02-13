@@ -1,0 +1,69 @@
+/*Color fondo principal de la app:*/
+.root{
+    -fx-background-color: #000000;
+}
+
+/*Color título:*/
+.titulo{
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1c40f;
+}
+
+/*Color del panel de info (sets y juegos):*/
+.panel-informacion{
+    -fx-background-color: #000000;
+    -fx-background-radius: 12;
+    -fx-padding: 12 20 12 20;
+}
+
+/*Color de labels sets y juegos*/
+.label-sets{
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1c40f;
+}
+.label-juegos{
+    -fx-font-size: 16px;
+    -fx-text-fill:#aaaacc;
+}
+.label-tiebreak{
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e74c3c; 
+}
+
+/*Color etiquetas de pareja:*/
+.label-pareja{
+    -fx-font-size: 15px;
+    -fx-text-fill: #f7f7f2;
+    -fx-font-weight: bold;
+}
+
+/*Color botones del marcador:*/
+.boton-marcador{
+    -fx-font-size: 72px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: #818182;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 180px;
+}
+.boton-marcador:hover{
+    -fx-background-color: #909091;
+}
+
+/*Color botón de reinicio*/
+.boton-reiniciar{
+     -fx-font-size: 14px;
+     -fx-padding: 10 24 10 24;
+     -fx-background-color: #8e0000;
+     -fx-text-fill: white;
+     -fx-background-radius: 20;
+     -fx-cursor: hand;
+}
+.boton-reiniciar:hover{
+    -fx-background-color: #a00000;
+}

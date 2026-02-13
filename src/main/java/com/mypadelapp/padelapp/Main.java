@@ -29,18 +29,6 @@ public class Main extends Application {
     private Button botonMarcadorPareja1;
     private Button botonMarcadorPareja2;
     
-    //Colores principales de la interfaz:
-    private static final String COLOR_DE_FONDO = "#000000";
-    private static final String COLOR_PANEL_INFORMACION = "#000000";
-    private static final String COLOR_BOTON_PAREJA1 = "#aeaeb0";
-    private static final String COLOR_BOTON_PAREJA2 = "#aeaeb0";
-    private static final String COLOR_BOTON_HOVER1 = "#818182";
-    private static final String COLOR_BOTON_HOVER2 = "#818182";
-    private static final String COLOR_TEXTO_PUNTOS = "#ffffff";
-    private static final String COLOR_SETS = "#f1c40f";
-    private static final String COLOR_JUEGOS = "#aaaacc";
-    private static final String COLOR_REINICIAR = "#8e0000";
-    
     @Override
     public void start(Stage primaryStage){
         //Creamos el modelo partido:
@@ -49,78 +37,50 @@ public class Main extends Application {
         
         //Título de la ventana:
         Label titulo = new Label ("Partido");
-        titulo.setStyle("-fx-font-size: 26px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-text-fill: " + COLOR_SETS + ";");
+        titulo.getStyleClass().add("titulo");
         
         //Panel de información: sets y juegos:
         labelSets = new Label("0  SETS  0");
-        labelSets.setStyle("-fx-font-size: 16px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-text-fill:" + COLOR_SETS + ";");
+        labelSets.getStyleClass().add("label-sets");
         
         labelJuegos = new Label("0  JUEGOS  0");
-        labelJuegos.setStyle("-fx-font-size: 16px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-text-fill:" + COLOR_JUEGOS + ";");
+        labelJuegos.getStyleClass().add("label-juegos");
         
         VBox panelInformacion = new VBox(6);
         panelInformacion.setAlignment(Pos.CENTER);
-        panelInformacion.setPadding(new Insets(12, 20, 12, 20));
-        panelInformacion.setStyle("-fx-background-color: " + COLOR_PANEL_INFORMACION + "; -fx-background-radius: 12;");
+        panelInformacion.getStyleClass().add("panel-informacion");
         panelInformacion.getChildren().addAll(labelSets, labelJuegos);
         
         //Botones-Marcador:
         botonMarcadorPareja1 = new Button("0");
-        botonMarcadorPareja1.setPrefSize(180, 180);
-        botonMarcadorPareja1.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_PAREJA1));
+        botonMarcadorPareja1.getStyleClass().add("boton-marcador");
         botonMarcadorPareja1.setOnAction(e -> puntoPareja1());
         
-        //Creamos el efecto hover de la pareja1:
-        botonMarcadorPareja1.setOnMouseEntered(e -> botonMarcadorPareja1.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_HOVER1)));
-        botonMarcadorPareja1.setOnMouseExited(e -> botonMarcadorPareja1.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_PAREJA1)));
-        
         botonMarcadorPareja2 = new Button("0");
-        botonMarcadorPareja2.setPrefSize(180, 180);
-        botonMarcadorPareja2.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_PAREJA2));
+        botonMarcadorPareja2.getStyleClass().add("boton-marcador");
         botonMarcadorPareja2.setOnAction(e -> puntoPareja2());
-        
-        //Creamos el efecto hover de la pareja2:
-        botonMarcadorPareja2.setOnMouseEntered(e -> botonMarcadorPareja2.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_HOVER2)));
-        botonMarcadorPareja2.setOnMouseExited(e -> botonMarcadorPareja2.setStyle(crearEstiloBotonMarcador(COLOR_BOTON_PAREJA2)));
-        
 
-        //Layout de los botones del marcador:
-        HBox layoutMarcador = new HBox(20);
-        layoutMarcador.setAlignment(Pos.CENTER);
-        layoutMarcador.getChildren().addAll(botonMarcadorPareja1, botonMarcadorPareja2);
-            
         //Botón de reinicio:
         Button botonReiniciar = new Button("↺");
-        botonReiniciar.setStyle("-fx-font-size: 14px;"
-                + "-fx-padding: 10px 24px;"
-                + "-fx-background-color:" + COLOR_REINICIAR + ";"
-                + "-fx-text-fill: white;"
-                + "-fx-background-radius: 20;"
-                + "-fx-cursor: hand;"
-        );
+        botonReiniciar.getStyleClass().add("boton-reiniciar");
         botonReiniciar.setOnAction(e -> reiniciar());
-        
+
         //Etiquetas de pareja:
         Label labelPareja1 = new Label("PAREJA 1");
-        labelPareja1.setStyle("-fx-font-size: 20px;" 
-                + "-fx-text-fill: #f7f7f2;"
-                + "-fx-text-weight: bold;");
+        labelPareja1.getStyleClass().add("label-pareja");
         labelPareja1.setPrefWidth(180);
         labelPareja1.setAlignment(Pos.CENTER);
         
         Label labelPareja2 = new Label("PAREJA 2");
-        labelPareja2.setStyle("-fx-font-size: 20px;" 
-                + "-fx-text-fill: #f7f7f2;"
-                + "-fx-text-weight: bold;");
+        labelPareja2.getStyleClass().add("label-pareja");
         labelPareja2.setPrefWidth(180);
         labelPareja2.setAlignment(Pos.CENTER);
-        
+
+        //Layouts marcador-etiquetas:
+        HBox layoutMarcador = new HBox(20);
+        layoutMarcador.setAlignment(Pos.CENTER);
+        layoutMarcador.getChildren().addAll(botonMarcadorPareja1, botonMarcadorPareja2);
+ 
         HBox layoutEtiquetas = new HBox(20);
         layoutEtiquetas.setAlignment(Pos.CENTER);
         layoutEtiquetas.getChildren().addAll(labelPareja1, labelPareja2);
@@ -129,28 +89,22 @@ public class Main extends Application {
         VBox layoutPrincipal = new VBox(22);
         layoutPrincipal.setAlignment(Pos.CENTER);
         layoutPrincipal.setPadding(new Insets(35));
-        layoutPrincipal.setStyle("-fx-background-color: " + COLOR_DE_FONDO + ";");
         layoutPrincipal.getChildren().addAll(
-                titulo,
-                panelInformacion,
-                layoutEtiquetas,
-                layoutMarcador,
-                botonReiniciar
+            titulo,
+            panelInformacion,
+            layoutEtiquetas,
+            layoutMarcador,
+            botonReiniciar
         );
         
+        //Cargamos el CSS:
         Scene scene = new Scene(layoutPrincipal, 480, 520);
+        scene.getStylesheets().add(
+            getClass().getResource("/styles.css").toExternalForm()
+        );
+        
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-    
-    //Contrucción del estilo CSS de los botones del marcador:
-    private String crearEstiloBotonMarcador(String colorFondo){
-        return "-fx-font-size: 72px;" +
-               "-fx-font-weight: bold;" + 
-               "-fx-font-fill: " + COLOR_TEXTO_PUNTOS + ";" +
-               "-fx-background-color :" + colorFondo + ";" +
-               "-fx-background-radius: 20;" +
-               "-fx-cursor: hand;";
     }
     
     //Método cuando pareja 1 gane un punto:
@@ -173,21 +127,17 @@ public class Main extends Application {
         String[] puntos = partido.getPuntuacion().split(" - ");
         botonMarcadorPareja1.setText(puntos[0]);
         botonMarcadorPareja2.setText(puntos[1]);
-
-      //Actualizamos la información de los sets y los juegos:
-      if (partido.istieBreak()){
+        
+        //Actualizamos la información de los sets y los juegos:
+        labelSets.setText(partido.getsetsPareja1() + "  SETS  " + partido.getsetsPareja2());
+        
+        if (partido.istieBreak()){
           labelJuegos.setText("Tie-Break");
-          labelJuegos.setStyle("-fx-font-size: 16px;"
-                  + "-fx-font-wight: bold;"
-                  + "-fx-text-fill: #e74c3c;");
-      } else {
+          labelJuegos.getStyleClass().setAll("label-tiebreak");
+        } else {
           labelJuegos.setText(partido.getJuegosPareja1() + "  JUEGOS  " + partido.getJuegosPareja2());
-          labelJuegos.setStyle("-fx-font-size: 16px;"
-                  + "-fx-font-wight: bold;"
-                  + "-fx-text-fill: " + COLOR_JUEGOS + ";");
-      }
-      
-      labelSets.setText(partido.getsetsPareja1() + "  SETS  " + partido.getsetsPareja2());
+          labelJuegos.getStyleClass().setAll("label-juegos");
+        }  
     }
     
     //Verificamos el ganador:
@@ -204,6 +154,9 @@ public class Main extends Application {
     //Método par reiniciar el marcador:
     private void reiniciar(){
         partido.reiniciar();
+        
+        //Reiniciamos las clases CSS:
+        labelJuegos.getStyleClass().setAll("label-juegos");
         actualizarMarcador();
     }
     
