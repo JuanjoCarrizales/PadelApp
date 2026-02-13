@@ -1,0 +1,14 @@
+# Archivos generados por NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Archivos generados por Maven
+target/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
