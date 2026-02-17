@@ -1,3 +1,4 @@
+/*1ª Página:*/
 /*Color fondo principal de la app:*/
 .root{
     -fx-background-color: #000000;
@@ -57,13 +58,96 @@
 
 /*Color botón de reinicio*/
 .boton-reiniciar{
-     -fx-font-size: 14px;
-     -fx-padding: 10 24 10 24;
-     -fx-background-color: #8e0000;
-     -fx-text-fill: white;
-     -fx-background-radius: 20;
-     -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24 10 24;
+    -fx-background-color: #8e0000;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
 }
 .boton-reiniciar:hover{
+    -fx-background-color: #a00000;
+}
+
+/*Color de los fondos:*/
+.fondo-principal{
+    -fx-background-color: #1a1a2e;
+    -fx-padding: 0 0 15 0;
+}
+.fondo-pagina{
+    -fx-background-color: #1a1a2e;
+    -fx-padding: 35 35 20 35;
+}
+
+/*Color "puntos" inferiores de navegación*/
+.punto.navegacion{
+    -fx-fill:#444466;
+}
+.punto.navegacion-dinamico{
+    -fx-fill:#f1c40f;
+}
+
+/*2ª Página:*/
+/*Color 2n titulo:*/
+.titulo2{
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1c40f;
+}
+
+/*Color del label del cronometro:*/
+.label-cronometro{
+    -fx-font-size: 64px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/*Color del label de las kcal:*/
+.label-titulo-kcal{
+    -fx-font-size: 16px;
+    -fx-text-fill: #aaaacc;
+}
+.label-valor-kcal{
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e74c3c;
+}
+
+/*Color de inicio del cronometro:*/
+.boton-inicio-cronometro{
+    -fx-font-size: 16px;
+    -fx-padding: 12 30 12 30;
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+.boton-inicio-cronometro:hover{
+    -fx-background-color: #2ecc71;
+}
+
+/*Color de pausa del cronometro:*/
+.boton-pausa-cronometro{
+    -fx-font-size: 16px;
+    -fx-padding: 12 30 12 30;
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+.boton-pausa-cronometro:hover{
+    -fx-background-color: #f1c40f;
+}
+
+/*Color del botón de reinicio del cronometro:*/
+.boton-reiniciar-cronometro{
+    -fx-font-size: 14px;
+    -fx-padding: 8 20 8 20;
+    -fx-background-color: #8e0000;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+.boton-reiniciar-cronometro:hover{
     -fx-background-color: #a00000;
 }
