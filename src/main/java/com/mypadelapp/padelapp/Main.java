@@ -64,7 +64,7 @@ public class Main extends Application {
         
         //Contenedor que superpone las 2 páginas:
         contenedor = new StackPane();
-        contenedor.getChildren().addAll(pagina1, pagina2);
+        contenedor.getChildren().addAll(pagina2, pagina1);
         
         //Gestos de la mano/ratón para deslizar:
         contenedor.setOnMousePressed(e -> mousePressX = e.getSceneX());
@@ -194,7 +194,7 @@ public class Main extends Application {
         //Label de Kcal:
         Label tituloKcal = new Label("Kcal quemadas");
         tituloKcal.getStyleClass().add("label-titulo-kcal");
-        labelKcal = new Label("0");
+        labelKcal = new Label("0kcal");
         labelKcal.getStyleClass().add("label-valor-kcal");
         
         //Iniciamos el cronómetro con el Timeline:
@@ -204,7 +204,7 @@ public class Main extends Application {
         cronometro.setCycleCount(Timeline.INDEFINITE);
         
         //Layout pagina:
-        VBox pagina = new VBox(18);
+        VBox pagina = new VBox(22);
         pagina.setAlignment(Pos.CENTER);
         pagina.getStyleClass().add("fondo-pagina");
         pagina.getChildren().addAll(
@@ -243,7 +243,7 @@ public class Main extends Application {
         
         //Calcular kcal, teniendo en cuenta estimación (300kcal/hora):
         double kcal = totalSegundos * KCAL_POR_SEGUNDO;
-        labelKcal.setText(String.format("%.1f", kcal));
+        labelKcal.setText(String.format("%.1f", kcal) + "kcal");
     }
     
     private void tickCronometro(){
