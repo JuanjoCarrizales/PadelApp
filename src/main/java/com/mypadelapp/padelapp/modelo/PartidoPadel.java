@@ -3,12 +3,42 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mypadelapp.padelapp.modelo;
+import java.util.Stack;
 
 /**
  *
  * @author juanj
  */
 public class PartidoPadel {
+    //Clase para guardar el estado del partido:
+    private static class EstadoPartido{
+        int puntosP1, puntosP2;
+        int juegosP1, juegosP2;
+        int setsP1, setsP2;
+        boolean ventajaP1, ventajaP2;
+        boolean tieBreak;
+        int puntosTieBreakP1, puntosTieBreakP2;
+        
+        EstadoPartido (int puntosP1, int puntosP2, int juegosP1, int juegosP2,
+                int setsP1, int setsP2, boolean ventajaP1, boolean ventajaP2,
+                boolean tieBreak, int puntosTieBreakP1, int puntosTieBreakP2){
+            this.puntosP1 = puntosP1;
+            this.puntosP2 = puntosP2;
+            this.juegosP1 = juegosP1;
+            this.juegosP2 = juegosP2;
+            this.setsP1 = setsP1;
+            this.setsP2 = setsP2;
+            this.ventajaP1 = ventajaP1;
+            this.ventajaP2 = ventajaP2;
+            this.tieBreak = tieBreak;
+            this.puntosTieBreakP1 = puntosTieBreakP1;
+            this.puntosTieBreakP2 = puntosTieBreakP2;
+        }
+    }
+    
+    //Historial Para deshacer:
+    private Stack<EstadoPartido> historial;
+    
     //Puntos actuales en el juego:
     private int puntosPareja1;
     private int puntosPareja2;
@@ -47,11 +77,15 @@ public class PartidoPadel {
         ventajaPareja2 = false;
         tieBreak = false;
         puntosTieBreakPareja1 = 0;
-        puntosTieBreakPareja2 = 0;     
+        puntosTieBreakPareja2 = 0; 
+        historial = new Stack<>();
     }
     
     //Puntuación pareja 1:
     public void addPuntoPareja1(){
+        //Estado del partido:
+        guardarEstado();
+        
         //Si estamos en Tie-Break:
         if (tieBreak){
             puntosTieBreakPareja1++;
@@ -82,6 +116,9 @@ public class PartidoPadel {
     
     //Puntuación pareja 2:
     public void addPuntoPareja2(){
+        //Estado del partido:
+        guardarEstado();
+        
         //Si estamos en Tie-Break:
         if (tieBreak){
             puntosTieBreakPareja2++;
@@ -244,5 +281,42 @@ public class PartidoPadel {
     
      public int getPuntosTieBreakPareja2(){
         return puntosTieBreakPareja2;
+    }
+     
+    //Guardado del estado actual del partido en el historial:
+    private void guardarEstado(){
+        EstadoPartido estado = new EstadoPartido(puntosPareja1, puntosPareja2,
+            juegosPareja1, juegosPareja2, setsPareja1, setsPareja2, ventajaPareja1,
+            ventajaPareja2, tieBreak, puntosTieBreakPareja1, puntosTieBreakPareja2
+        );
+        historial.push(estado);
+    }
+    
+    //Deshacer el último punto:
+    public boolean deshacer(){
+        if (historial.isEmpty()){
+            return false; //En este caso, no deshará nada
+        }
+        
+        EstadoPartido estado = historial.pop();
+        //Restauramos el estado/punto:
+        puntosPareja1 = estado.puntosP1;
+        puntosPareja2 = estado.puntosP2;
+        juegosPareja1 = estado.juegosP1;
+        juegosPareja2 = estado.juegosP2;
+        setsPareja1 = estado.setsP1;
+        setsPareja2 = estado.setsP2;
+        ventajaPareja1 = estado.ventajaP1;
+        ventajaPareja2 = estado.ventajaP2;
+        tieBreak = estado.tieBreak;
+        puntosTieBreakPareja1 = estado.puntosTieBreakP1;
+        puntosTieBreakPareja2 = estado.puntosTieBreakP2;
+        
+        return true;
+    }
+    
+    //Verificamos si tenemos historial disponible:
+    public boolean historial(){
+        return !historial.isEmpty();
     }
 }

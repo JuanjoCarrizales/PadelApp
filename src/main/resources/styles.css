@@ -61,25 +61,32 @@
     -fx-background-color: #909091;
 }
 
-/*Color botón de reinicio*/
-.boton-reiniciar{
-    -fx-font-size: 14px;
-    -fx-padding: 10 24 10 24;
-    -fx-background-color: #8e0000;
-    -fx-text-fill: white;
-    -fx-background-radius: 20;
-    -fx-cursor: hand;
-}
-.boton-reiniciar:hover{
-    -fx-background-color: #a00000;
-}
-
 /*Color "puntos" inferiores de navegación*/
 .punto-navegacion{
     -fx-fill: #818182;
 }
 .punto-navegacion-dinamico{
     -fx-fill: #f5f2f2;
+}
+
+/*Botones de deshacer:*/
+.boton-deshacer{
+    -fx-font-size: 13px;
+    -fx-padding: 8 16 8 16;
+    -fx-background-color: #0804d6;
+    -fx-text-fill: white;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+}
+.boton-deshacer:hover{
+    -fx-background-color: #07a1fa;
+}
+
+.boton-deshacer:disabled{
+    -fx-background-color: #444444;
+    -fx-text-fill: #888888;
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
 }
 
 /*2ª Página:*/

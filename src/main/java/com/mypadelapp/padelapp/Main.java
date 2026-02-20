@@ -34,6 +34,9 @@ public class Main extends Application {
     private Button botonMarcadorPareja1;
     private Button botonMarcadorPareja2;
     
+    //Boton de deshacer:
+    private Button botonDeshacer;
+
     //Página 2: Cronómetro:
     private Label labelCronometro;
     private Label labelKcal;
@@ -126,20 +129,25 @@ public class Main extends Application {
         botonMarcadorPareja1 = new Button("0");
         botonMarcadorPareja1.getStyleClass().add("boton-marcador");
         botonMarcadorPareja1.setOnAction(e -> puntoPareja1());
+        
         botonMarcadorPareja2 = new Button("0");
         botonMarcadorPareja2.getStyleClass().add("boton-marcador");
         botonMarcadorPareja2.setOnAction(e -> puntoPareja2());
 
-        //Botón de reinicio:
-        Button botonReiniciar = new Button("↺");
-        botonReiniciar.getStyleClass().add("boton-reiniciar");
-        botonReiniciar.setOnAction(e -> reiniciar());
+        //Botón de deshacer:
+        botonDeshacer = new Button("↶");
+        botonDeshacer.getStyleClass().add("boton-deshacer");
+        botonDeshacer.setOnAction(e -> deshacer());
+        botonDeshacer.setDisable(true);
+        botonDeshacer.setPrefWidth(180);
+
 
         //Etiquetas de pareja:
         Label labelPareja1 = new Label("PAREJA 1");
         labelPareja1.getStyleClass().add("label-pareja");
         labelPareja1.setPrefWidth(180);
         labelPareja1.setAlignment(Pos.CENTER);
+        
         Label labelPareja2 = new Label("PAREJA 2");
         labelPareja2.getStyleClass().add("label-pareja");
         labelPareja2.setPrefWidth(180);
@@ -149,9 +157,14 @@ public class Main extends Application {
         HBox layoutMarcador = new HBox(20);
         layoutMarcador.setAlignment(Pos.CENTER);
         layoutMarcador.getChildren().addAll(botonMarcadorPareja1, botonMarcadorPareja2);
+        
         HBox layoutEtiquetas = new HBox(20);
         layoutEtiquetas.setAlignment(Pos.CENTER);
         layoutEtiquetas.getChildren().addAll(labelPareja1, labelPareja2);
+        
+        HBox layoutDeshacer = new HBox(20);
+        layoutDeshacer.setAlignment(Pos.CENTER);
+        layoutDeshacer.getChildren().addAll(botonDeshacer);
 
         //Layout pagina:
         VBox pagina = new VBox(22);
@@ -162,7 +175,7 @@ public class Main extends Application {
             panelInformacion,
             layoutEtiquetas,
             layoutMarcador,
-            botonReiniciar
+            layoutDeshacer
         );
         return pagina;
     }
@@ -279,6 +292,7 @@ public class Main extends Application {
     private void puntoPareja1(){
         partido.addPuntoPareja1();
         actualizarMarcador();
+        actualizarBotonesDeshacer();
         verificarGanador();
     }
     
@@ -286,6 +300,7 @@ public class Main extends Application {
     private void puntoPareja2(){
         partido.addPuntoPareja2();
         actualizarMarcador();
+        actualizarBotonesDeshacer();
         verificarGanador();
     }
     
@@ -314,18 +329,35 @@ public class Main extends Application {
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("Final del partido");
             alerta.setHeaderText(partido.getGanador());
-            alerta.setContentText("Presiona 'Reiniciar' para jugar de nuevo");
+            alerta.setContentText("Se reiniciará el partido");
             alerta.showAndWait();
+            
+            //Reiniciamos automáticamente el partido:
+            reiniciar();
         }
+    }
+    
+    //Método para deshacer el último punto:
+    private void deshacer(){
+        if (partido.deshacer()){
+            actualizarMarcador();
+            actualizarBotonesDeshacer();
+        }
+    }
+    
+    //Método para actualizar el estado de los botonea de deshacer:
+    private void actualizarBotonesDeshacer(){
+        boolean historial = partido.historial();
+        botonDeshacer.setDisable(!historial);
     }
     
     //Método par reiniciar el marcador:
     private void reiniciar(){
         partido.reiniciar();
-        
         //Reiniciamos las clases CSS:
         labelJuegos.getStyleClass().setAll("label-juegos");
         actualizarMarcador();
+        actualizarBotonesDeshacer();
     }
     
     public static void main(String[] args){
