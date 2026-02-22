@@ -111,7 +111,7 @@ public class Main extends Application {
     //1ª Página:
     private VBox crearPagina1(){
         //Título de la pagina1:    
-        Label titulo = new Label ("Partido");
+        Label titulo = new Label("Partido");
         titulo.getStyleClass().add("titulo");
 
         //Panel de información: sets y juegos:
@@ -326,6 +326,9 @@ public class Main extends Application {
     //Verificamos el ganador:
     private void verificarGanador(){
         if (partido.ganador()){
+            //Finalizamos en BBDD:
+            partido.finalizarPartidoBD();
+            
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("Final del partido");
             alerta.setHeaderText(partido.getGanador());

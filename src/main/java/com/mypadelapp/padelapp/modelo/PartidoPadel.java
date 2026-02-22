@@ -5,10 +5,6 @@
 package com.mypadelapp.padelapp.modelo;
 import java.util.Stack;
 
-/**
- *
- * @author juanj
- */
 public class PartidoPadel {
     //Clase para guardar el estado del partido:
     private static class EstadoPartido{
@@ -60,13 +56,27 @@ public class PartidoPadel {
     private int puntosTieBreakPareja1;
     private int puntosTieBreakPareja2;
     
+    //Base de datos:
+    private DatabaseManager db;
+    private int idPartidoActual;
+    private int tiempoInicioPartido;
+    
     //Método constructor: Se inicia todo en 0:
     public PartidoPadel(){
+        db = new DatabaseManager();
         reiniciar();
     }
     
     //Reiniciar el partido completo:
     public void reiniciar(){
+        //Iniciar nuevo partido en la BBDD:
+        try {
+            idPartidoActual = db.iniciarPartido("Pareja 1", "Pareja 2");
+            tiempoInicioPartido = (int) (System.currentTimeMillis() / 1000);
+        } catch(Exception e){
+            System.err.println("Error al iniciar partido en la BBDD: " + e.getMessage());
+        }
+        
         puntosPareja1 = 0;
         puntosPareja2 = 0;
         juegosPareja1 = 0;
@@ -85,6 +95,7 @@ public class PartidoPadel {
     public void addPuntoPareja1(){
         //Estado del partido:
         guardarEstado();
+        guardarPuntosBD(1);
         
         //Si estamos en Tie-Break:
         if (tieBreak){
@@ -118,6 +129,7 @@ public class PartidoPadel {
     public void addPuntoPareja2(){
         //Estado del partido:
         guardarEstado();
+        guardarPuntosBD(2);
         
         //Si estamos en Tie-Break:
         if (tieBreak){
@@ -318,5 +330,41 @@ public class PartidoPadel {
     //Verificamos si tenemos historial disponible:
     public boolean historial(){
         return !historial.isEmpty();
+    }
+    
+    //Guardar puntos en la BBDD:
+    private void guardarPuntosBD(int parejaGanadora){
+        try {
+            int timestamp = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
+            db.guardarPuntos(idPartidoActual, 
+                timestamp, 
+                parejaGanadora, 
+                puntosPareja1, 
+                puntosPareja2, 
+                juegosPareja1, 
+                juegosPareja2, 
+                setsPareja1, 
+                setsPareja2, 
+                tieBreak
+            );
+        } catch (Exception e){
+            System.err.println("Error al guardar puntos: " + e.getMessage());
+        }
+    }
+    
+    //Finalizar partido en la BBDD:
+    public void finalizarPartidoBD(){
+        try {
+            int duracion = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
+            int ganador = setsPareja1 >= 2 ? 1 : 2;
+            db.finalizarPartido(idPartidoActual, 
+                duracion, 
+                setsPareja1, 
+                setsPareja2, 
+                ganador
+            );
+        } catch (Exception e){
+            System.err.println("Error al finalizar el partido: " + e.getMessage());
+        }
     }
 }
