@@ -144,8 +144,78 @@ public class DatabaseManager {
                 conexion.close();
                 System.out.println("Conexión cerrada");
             }
-        } catch (SQLException e) {
+        } catch (SQLException e){
             System.out.println("Error al cerrar la conexión: " + e.getMessage());
         }
+    }
+    
+    //Obtenemos el total de los partidos jugados:
+    public int getTotalPartidos(){
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1");
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e){
+            System.err.println("Error al obtener el total de partidos: " + e.getMessage());
+        }
+        return 0;
+    }
+    
+    //Obtenemos Nº de victorias de la pareja 1:
+    public int getVictoriasPareja1(){
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1 AND ganador = 1");
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e){
+            System.err.println("Error al obtener victorias de la pareja 1: " + e.getMessage());
+        }
+        return 0;   
+    }
+    
+    //Obtenemos Nº de victorias de la pareja 2:
+    public int getVictoriasPareja2(){
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1 AND ganador = 2");
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e){
+            System.err.println("Error al obtener victorias de la pareja 2: " + e.getMessage());
+        }
+        return 0;   
+    }
+    
+    //Obtención de la duración media de los partidos:
+    public int getDuracionMedia(){
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT AVG(duracion_total) FROM partidos WHERE partido_finalizado");
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e){
+            System.err.println("Error al obtener duración media: " + e.getMessage());
+        }
+        return 0;   
+    }
+    
+    //Obtenciónd del total de puntos jugados:
+    public int getPuntosTotales(){
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT COUNT(*) FROM puntos");
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e){
+            System.err.println("Error al obtener puntos totales: " + e.getMessage());
+        }
+        return 0;
     }
 }

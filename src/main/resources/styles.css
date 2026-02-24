@@ -9,7 +9,7 @@
 }
 
 /*Página1:*/
-/*Color título:*/
+/*Color 1r título:*/
 .titulo{
     -fx-font-size: 26px;
     -fx-font-weight: bold;
@@ -152,4 +152,46 @@
 }
 .boton-reiniciar-cronometro:hover{
     -fx-background-color: #a00000;
+}
+
+/*3ª Página:*/
+/*Color 3r titulo:*/
+.titulo-estadisticas{
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1c40f;
+}
+
+/*Color contenedor Estadísticas:*/
+.container-estadisticas{
+    -fx-background-color: #fa8f32;
+    -fx-background-radius: 12;
+    -fx-padding: 15 20 15 20;
+}
+
+/*Color del label de las estadísticas:*/
+.label-estadisticas{
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/*Color de los valores de las estadísticas:*/
+.valor-numerico-estadisticas{
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/*Color de los valores de las estadísticas 2:*/
+.valor-estadisticas-2{
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/*Color separador:*/
+.separador-valores{
+    -fx-font-size: 24px;
+    -fx-text-fill: #ffffff;
 }

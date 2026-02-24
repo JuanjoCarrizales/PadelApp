@@ -5,6 +5,9 @@
 package com.mypadelapp.padelapp;
 
 import com.mypadelapp.padelapp.modelo.PartidoPadel;
+import com.mypadelapp.padelapp.modelo.DatabaseManager;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -50,11 +53,20 @@ public class Main extends Application {
     private StackPane contenedor;
     private VBox pagina1;
     private VBox pagina2;
+    private VBox pagina3;
     private Circle punto1;
     private Circle punto2;
+    private Circle punto3;
     private int paginaActual = 0;
     private double mousePressX;
     
+    //Página 3: Estadísticas:
+    private Label labelTotalPartidos;
+    private Label labelVictoriasPareja1;
+    private Label labelVictoriasPareja2;
+    private Label labelDuracionMedia;
+    private Label labelTotalPuntos;
+     
     @Override
     public void start(Stage primaryStage){
         //Creamos el modelo partido:
@@ -64,33 +76,31 @@ public class Main extends Application {
         //Creación de las páginas:
         pagina1 = crearPagina1();
         pagina2 = crearPagina2();
+        pagina3 = crearPagina3();
+        
+        //Gestos al deslizar entre páginas:
+        gestos(pagina1);
+        gestos(pagina2);
+        gestos(pagina3);
         
         //Contenedor que superpone las 2 páginas:
         contenedor = new StackPane();
-        contenedor.getChildren().addAll(pagina2, pagina1);
-        
-        //Gestos de la mano/ratón para deslizar:
-        contenedor.setOnMousePressed(e -> mousePressX = e.getSceneX());
-        contenedor.setOnMouseReleased(e -> {
-            double diferencia = e.getSceneX() - mousePressX;
-            if (diferencia < -50 && paginaActual == 0){
-                //Deslizamos a la izquierda a la página 2:
-                irPagina(1);
-            } else if (diferencia > 50 && paginaActual == 1){
-                //Deslizamos a la derecha a la página 1:
-                irPagina(0);
-            }
-        });
+        contenedor.getChildren().addAll(pagina3, pagina2, pagina1);
         
         //Navegación por "puntos":
         punto1 = new Circle(5);
         punto1.getStyleClass().add("punto-navegacion-dinamico");
+        
         punto2 = new Circle(5);
         punto2.getStyleClass().add("punto-navegacion");
         
+        punto3 = new Circle(5);
+        punto3.getStyleClass().add("punto-navegacion");
+        
         HBox puntos = new HBox(8);
         puntos.setAlignment(Pos.CENTER);
-        puntos.getChildren().addAll(punto1, punto2);
+        puntos.getChildren().addAll(punto1, punto2, punto3);
+        gestos(puntos);
         
         //Layout principal:
         VBox lPrincipal = new VBox(10);
@@ -106,7 +116,25 @@ public class Main extends Application {
         
         primaryStage.setScene(scene);
         primaryStage.show();
-    }   
+    }  
+    
+    //Gestos de la mano/ratón para deslizar:
+    private void gestos(javafx.scene.Node nodo){
+        nodo.setOnMousePressed(e -> {
+            mousePressX = e.getSceneX();
+            e.consume();
+        });
+        
+        nodo.setOnMouseReleased(e -> {
+            double diferencia = e.getSceneX() - mousePressX;
+            if (diferencia < -50 && paginaActual < 2){
+                irPagina(paginaActual + 1);
+            } else if (diferencia > 50 && paginaActual > 0){
+                irPagina(paginaActual - 1);
+            }
+            e.consume();
+        });
+    }
     
     //1ª Página:
     private VBox crearPagina1(){
@@ -183,7 +211,7 @@ public class Main extends Application {
     //2ª Página:
     private VBox crearPagina2(){
         //Título de la pagina2: 
-        Label titulo = new Label("Estadísticas");
+        Label titulo = new Label("Crono");
         titulo.getStyleClass().add("titulo2");
         
         //Cronometro:
@@ -231,6 +259,125 @@ public class Main extends Application {
         return pagina;
     }
     
+    //3ª Página:
+    private VBox crearPagina3(){
+        //Título de la página3:
+        Label titulo = new Label("Estadísticas");
+        titulo.getStyleClass().add("titulo-estadisticas");
+        
+        //nº Total de partidos:
+        Label lTotalPartidos = new Label("PARTIDOS JUGADOS");
+        lTotalPartidos.getStyleClass().add("label-estadisticas");
+        labelTotalPartidos = new Label("0");
+        labelTotalPartidos.getStyleClass().add("valor-numerico-estadisticas");
+        
+        //Layout total partidos jugados:
+        VBox bTotalPartidos = new VBox(5);
+        bTotalPartidos.setAlignment(Pos.CENTER);
+        bTotalPartidos.getStyleClass().add("container-estadisticas");
+        bTotalPartidos.getChildren().addAll(lTotalPartidos, labelTotalPartidos);
+        
+        //Victorias:
+        Label lVictorias = new Label("VICTORIAS");
+        lVictorias.getStyleClass().add("label-estadisticas");
+        
+        labelVictoriasPareja1 = new Label("0");
+        labelVictoriasPareja1.getStyleClass().add("valor-numerico-estadisticas");
+        
+        Label lSeparador = new Label(" - ");
+        lSeparador.getStyleClass().add("separador-valores");
+        
+        labelVictoriasPareja2 = new Label("0");
+        labelVictoriasPareja2.getStyleClass().add("valor-numerico-estadisticas");
+        
+        //Layout victorias:
+        HBox bVictoriasValores = new HBox(15);
+        bVictoriasValores.setAlignment(Pos.CENTER);
+        bVictoriasValores.getChildren().addAll(labelVictoriasPareja1, lSeparador, labelVictoriasPareja2);
+        
+        VBox bVictorias = new VBox(5);
+        bVictorias.setAlignment(Pos.CENTER);
+        bVictorias.getStyleClass().add("container-estadisticas");
+        bVictorias.getChildren().addAll(lVictorias, bVictoriasValores);
+        
+        //Duración media de partidos:
+        Label lDuracion = new Label("DURACIÓN MEDIA");
+        lDuracion.getStyleClass().add("label-estadisticas");
+        
+        labelDuracionMedia = new Label("00:00");
+        labelDuracionMedia.getStyleClass().add("valor-estadisticas-2");
+        
+        //Layout Duración media de partido:
+        VBox bDuracion = new VBox(5);
+        bDuracion.setAlignment(Pos.CENTER);
+        bDuracion.getStyleClass().add("container-estadisticas");
+        bDuracion.getChildren().addAll(lDuracion, labelDuracionMedia);
+        
+        //Conteo de los puntos totales:
+        Label lPuntos = new Label("TOTAL PUNTOS JUGADOS");
+        lPuntos.getStyleClass().add("label-estadisticas");
+        
+        labelTotalPuntos = new Label("0");
+        labelTotalPuntos.getStyleClass().add("valor-numerico-estadisticas");
+        
+        //Layout Puntos totales:
+        VBox bPuntos = new VBox(5);
+        bPuntos.setAlignment(Pos.CENTER);
+        bPuntos.getStyleClass().add("container-estadisticas");
+        bPuntos.getChildren().addAll(lPuntos, labelTotalPuntos);
+        
+        //Layout principal:
+        VBox pagina = new VBox(18);
+        pagina.setAlignment(Pos.CENTER);
+        pagina.getStyleClass().add("fondo-pagina");
+        pagina.getChildren().addAll(
+            titulo,
+            bTotalPartidos,
+            bVictorias,
+            bDuracion,
+            bPuntos
+        );
+        return pagina;
+    }
+    
+    //Actualización de las estadísticas desde la BBDD:
+    private void actualizarEstadisticas(){
+        DatabaseManager db = partido.getDatabase();
+        
+        int totalPartidos = db.getTotalPartidos();
+        int victoriasPareja1 = db.getVictoriasPareja1();
+        int victoriasPareja2 = db.getVictoriasPareja2();
+        int duracionMedia = db.getDuracionMedia();
+        int totalPuntos = db.getPuntosTotales();
+        
+        labelTotalPartidos.setText(String.valueOf(totalPartidos));
+        labelVictoriasPareja1.setText(String.valueOf(victoriasPareja1));
+        labelVictoriasPareja2.setText(String.valueOf(victoriasPareja2));
+        labelTotalPuntos.setText(String.valueOf(totalPuntos));
+        
+        //Conversión de la duración media del partido a mm:ss :
+        int minutos = duracionMedia / 60;
+        int segundos = duracionMedia % 60;
+        labelDuracionMedia.setText(String.format("%02d:%02d", minutos, segundos));
+    }
+    
+    //Navegación entre páginas:
+    private void irPagina(int pagina){
+        paginaActual = pagina;
+        //Actualizamos la pagina visible:
+        if (pagina == 0){
+            pagina1.toFront();  
+        } else if (pagina == 1){
+            pagina2.toFront();
+        } else if (pagina == 2){
+            pagina3.toFront();
+            actualizarEstadisticas();
+        }
+        punto1.getStyleClass().setAll(pagina == 0 ? "punto-navegacion-dinamico" : "punto-navegacion");
+        punto2.getStyleClass().setAll(pagina == 1 ? "punto-navegacion-dinamico" : "punto-navegacion");
+        punto3.getStyleClass().setAll(pagina == 2 ? "punto-navegacion-dinamico" : "punto-navegacion");
+    }
+    
     //Añadimos la parte lógica al cronómetro:
     private void toggleCronometro(){
         if (cronometroActivo){
@@ -274,20 +421,6 @@ public class Main extends Application {
         labelKcal.setText("0kcal");
     }
 
-    //Navegación entre páginas:
-    private void irPagina(int pagina){
-        paginaActual = pagina;
-        if (pagina == 0){
-            pagina1.toFront();
-            punto1.getStyleClass().setAll("punto-navegacion-dinamico");
-            punto2.getStyleClass().setAll("punto-navegacion");
-        } else {
-            pagina2.toFront();
-            punto1.getStyleClass().setAll("punto-navegacion");
-            punto2.getStyleClass().setAll("punto-navegacion-dinamico");
-        }
-    }
-    
     //Método cuando pareja 1 gane un punto:
     private void puntoPareja1(){
         partido.addPuntoPareja1();

@@ -352,6 +352,11 @@ public class PartidoPadel {
         }
     }
     
+    //Obtención de referencia a la BBDD:
+    public DatabaseManager getDatabase(){
+        return db;
+    }
+    
     //Finalizar partido en la BBDD:
     public void finalizarPartidoBD(){
         try {
