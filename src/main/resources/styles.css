@@ -11,7 +11,7 @@
 /*Página1:*/
 /*Color 1r título:*/
 .titulo{
-    -fx-font-size: 26px;
+    -fx-font-size: 1.56em;
     -fx-font-weight: bold;
     -fx-text-fill: #f1c40f;
 }
@@ -25,30 +25,31 @@
 
 /*Color de labels sets y juegos*/
 .label-sets{
-    -fx-font-size: 16px;
+    -fx-font-size: 0.96em;
     -fx-font-weight: bold;
-    -fx-text-fill: #f1c40f;
+    -fx-text-fill: #2121ff;
 }
 .label-juegos{
-    -fx-font-size: 16px;
-    -fx-text-fill:#aaaacc;
+    -fx-font-size: 0.96em;
+    -fx-font-weight: bold;
+    -fx-text-fill:#19e31c;
 }
 .label-tiebreak{
-    -fx-font-size: 16px;
+    -fx-font-size: 0.96em;
     -fx-font-weight: bold;
     -fx-text-fill: #e74c3c; 
 }
 
 /*Color etiquetas de pareja:*/
 .label-pareja{
-    -fx-font-size: 15px;
+    -fx-font-size: 0.9em;
     -fx-text-fill: #f7f7f2;
     -fx-font-weight: bold;
 }
 
 /*Color botones del marcador:*/
 .boton-marcador{
-    -fx-font-size: 72px;
+    -fx-font-size: 3.5em;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-background-color: #818182;
@@ -71,7 +72,7 @@
 
 /*Botones de deshacer:*/
 .boton-deshacer{
-    -fx-font-size: 13px;
+    -fx-font-size: 0.78em;
     -fx-padding: 8 16 8 16;
     -fx-background-color: #0804d6;
     -fx-text-fill: white;
@@ -92,32 +93,32 @@
 /*2ª Página:*/
 /*Color 2n titulo:*/
 .titulo2{
-    -fx-font-size: 20px;
+    -fx-font-size: 1.2em;
     -fx-font-weight: bold;
     -fx-text-fill: #f1c40f;
 }
 
 /*Color del label del cronometro:*/
 .label-cronometro{
-    -fx-font-size: 64px;
+    -fx-font-size: 3.84em;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
 }
 
 /*Color del label de las kcal:*/
 .label-titulo-kcal{
-    -fx-font-size: 16px;
+    -fx-font-size: 0.96em;
     -fx-text-fill: white;
 }
 .label-valor-kcal{
-    -fx-font-size: 48px;
+    -fx-font-size: 2.88em;
     -fx-font-weight: bold;
     -fx-text-fill: #e74c3c;
 }
 
 /*Color de inicio del cronometro:*/
 .boton-inicio-cronometro{
-    -fx-font-size: 16px;
+    -fx-font-size: 0.96em;
     -fx-padding: 12 30 12 30;
     -fx-background-color: #27ae60;
     -fx-text-fill: white;
@@ -130,7 +131,7 @@
 
 /*Color de pausa del cronometro:*/
 .boton-pausa-cronometro{
-    -fx-font-size: 16px;
+    -fx-font-size: 0.96em;
     -fx-padding: 12 30 12 30;
     -fx-background-color: #f39c12;
     -fx-text-fill: white;
@@ -143,7 +144,7 @@
 
 /*Color del botón de reinicio del cronometro:*/
 .boton-reiniciar-cronometro{
-    -fx-font-size: 14px;
+    -fx-font-size: 0.84em;
     -fx-padding: 8 20 8 20;
     -fx-background-color: #8e0000;
     -fx-text-fill: white;
@@ -157,7 +158,7 @@
 /*3ª Página:*/
 /*Color 3r titulo:*/
 .titulo-estadisticas{
-    -fx-font-size: 25px;
+    -fx-font-size: 1.5em;
     -fx-font-weight: bold;
     -fx-text-fill: #f1c40f;
 }
@@ -171,27 +172,27 @@
 
 /*Color del label de las estadísticas:*/
 .label-estadisticas{
-    -fx-font-size: 15px;
+    -fx-font-size: 0.9em;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
 }
 
 /*Color de los valores de las estadísticas:*/
 .valor-numerico-estadisticas{
-    -fx-font-size: 15px;
+    -fx-font-size: 0.9em;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
 }
 
 /*Color de los valores de las estadísticas 2:*/
 .valor-estadisticas-2{
-    -fx-font-size: 12px;
+    -fx-font-size: 0.72em;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
 }
 
 /*Color separador:*/
 .separador-valores{
-    -fx-font-size: 24px;
+    -fx-font-size: 1.44em;
     -fx-text-fill: #ffffff;
 }

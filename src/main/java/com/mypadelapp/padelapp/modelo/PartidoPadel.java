@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mypadelapp.padelapp.modelo;
+import java.sql.SQLException;
 import java.util.Stack;
 
-public class PartidoPadel {
+public final class PartidoPadel {
     //Clase para guardar el estado del partido:
     private static class EstadoPartido{
         int puntosP1, puntosP2;
@@ -32,6 +33,9 @@ public class PartidoPadel {
         }
     }
     
+    //Control del inicio de partido:
+    private boolean partidoIniciado = false;
+        
     //Historial Para deshacer:
     private Stack<EstadoPartido> historial;
     
@@ -57,8 +61,8 @@ public class PartidoPadel {
     private int puntosTieBreakPareja2;
     
     //Base de datos:
-    private DatabaseManager db;
-    private int idPartidoActual;
+    private final DatabaseManager db;
+    private int idPartidoActual = -1;
     private int tiempoInicioPartido;
     
     //Método constructor: Se inicia todo en 0:
@@ -69,13 +73,8 @@ public class PartidoPadel {
     
     //Reiniciar el partido completo:
     public void reiniciar(){
-        //Iniciar nuevo partido en la BBDD:
-        try {
-            idPartidoActual = db.iniciarPartido("Pareja 1", "Pareja 2");
-            tiempoInicioPartido = (int) (System.currentTimeMillis() / 1000);
-        } catch(Exception e){
-            System.err.println("Error al iniciar partido en la BBDD: " + e.getMessage());
-        }
+        partidoIniciado = false;
+        idPartidoActual = -1;
         
         puntosPareja1 = 0;
         puntosPareja2 = 0;
@@ -89,6 +88,25 @@ public class PartidoPadel {
         puntosTieBreakPareja1 = 0;
         puntosTieBreakPareja2 = 0; 
         historial = new Stack<>();
+    }
+    
+    //Iniciar el partido con el cronometro:
+    public void iniciarPartido() {
+        if (!partidoIniciado) {
+            try {
+                idPartidoActual = db.iniciarPartido("Pareja 1", "Pareja 2");
+                tiempoInicioPartido = (int)(System.currentTimeMillis() / 1000);
+                partidoIniciado = true;
+                System.out.println("Partido iniciado - ID: " + idPartidoActual);
+            } catch (Exception e){
+                System.err.println("Error al iniciar el partido: " + e.getMessage());
+            }  
+        }
+    }
+    
+    //Verificamos si el partido está empezado:
+    public boolean partidoEmpezado(){
+        return partidoIniciado;
     }
     
     //Puntuación pareja 1:
@@ -226,13 +244,13 @@ public class PartidoPadel {
  
     //Convertimos los puntos en formato padel (0, 15, 30, 40):
     public String convertirPuntos(int puntos){
-        switch (puntos){
-            case 0: return "0";
-            case 1: return "15";
-            case 2: return "30";
-            case 3: return "40";
-            default: return "40";
-        }
+        return switch (puntos) {
+            case 0 -> "0";
+            case 1 -> "15";
+            case 2 -> "30";
+            case 3 -> "40";
+            default -> "40";
+        };
     }
     
     //Añadimos los getters para mostrar en la interfaz:
@@ -334,6 +352,10 @@ public class PartidoPadel {
     
     //Guardar puntos en la BBDD:
     private void guardarPuntosBD(int parejaGanadora){
+        //Guardamos solo en caso que el partido esté empezado:
+        if (!partidoIniciado || idPartidoActual == -1) {
+            return;
+        }
         try {
             int timestamp = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
             db.guardarPuntos(idPartidoActual, 
@@ -347,7 +369,7 @@ public class PartidoPadel {
                 setsPareja2, 
                 tieBreak
             );
-        } catch (Exception e){
+        } catch (SQLException e){
             System.err.println("Error al guardar puntos: " + e.getMessage());
         }
     }
@@ -359,6 +381,10 @@ public class PartidoPadel {
     
     //Finalizar partido en la BBDD:
     public void finalizarPartidoBD(){
+        //Solo acabamos el partido si el partido se ha empezado con el cronómetro:
+        if (!partidoIniciado || idPartidoActual == -1) {
+            return;
+        }
         try {
             int duracion = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
             int ganador = setsPareja1 >= 2 ? 1 : 2;
@@ -368,7 +394,7 @@ public class PartidoPadel {
                 setsPareja2, 
                 ganador
             );
-        } catch (Exception e){
+        } catch (SQLException e){
             System.err.println("Error al finalizar el partido: " + e.getMessage());
         }
     }

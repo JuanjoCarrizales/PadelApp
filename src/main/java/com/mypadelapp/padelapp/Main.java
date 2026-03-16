@@ -6,8 +6,6 @@ package com.mypadelapp.padelapp;
 
 import com.mypadelapp.padelapp.modelo.PartidoPadel;
 import com.mypadelapp.padelapp.modelo.DatabaseManager;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -62,10 +60,9 @@ public class Main extends Application {
     
     //Página 3: Estadísticas:
     private Label labelTotalPartidos;
-    private Label labelVictoriasPareja1;
-    private Label labelVictoriasPareja2;
+    private Label labelVictorias;
+    private Label labelDerrotas;
     private Label labelDuracionMedia;
-    private Label labelTotalPuntos;
      
     @Override
     public void start(Stage primaryStage){
@@ -86,6 +83,8 @@ public class Main extends Application {
         //Contenedor que superpone las 2 páginas:
         contenedor = new StackPane();
         contenedor.getChildren().addAll(pagina3, pagina2, pagina1);
+        botonResponsivo(botonMarcadorPareja1);
+        botonResponsivo(botonMarcadorPareja2);
         
         //Navegación por "puntos":
         punto1 = new Circle(5);
@@ -108,16 +107,35 @@ public class Main extends Application {
         lPrincipal.getStyleClass().add("fondo-principal");
         lPrincipal.getChildren().addAll(contenedor, puntos);
         
-        //Cargamos el CSS:
-        Scene scene = new Scene(lPrincipal, 480, 520);
+        Scene scene = new Scene(lPrincipal, 480, 560);
+        //Escalado global:
+        lPrincipal.setStyle("-fx-font-size: " + (scene.getWidth() / 30) + "px;");
+        //Listener de actualización:
+        scene.widthProperty().addListener((obs, oldval, newVal) -> {
+            double fontSize = newVal.doubleValue() / 30;
+            lPrincipal.setStyle("-fx-font-size: " + fontSize + "px;");
+        });
+        scene.heightProperty().addListener((obs, oldval, newVal) -> {
+            double fontSize = newVal.doubleValue() / 30;
+            lPrincipal.setStyle("-fx-font-size: " + fontSize + "px;");
+        });
         scene.getStylesheets().add(
+            //Cargamos el CSS:
             getClass().getResource("/styles.css").toExternalForm()
         );
         
         primaryStage.setScene(scene);
         primaryStage.show();
-    }  
+    }
     
+    //Hacer los botones responsivos:
+    private void botonResponsivo(Button boton){
+        boton.prefWidthProperty().bind(contenedor.widthProperty().multiply(0.37));
+        boton.prefHeightProperty().bind(contenedor.widthProperty().multiply(0.37));
+        boton.setMinWidth(50);
+        boton.setMinHeight(50);
+    }
+ 
     //Gestos de la mano/ratón para deslizar:
     private void gestos(javafx.scene.Node nodo){
         nodo.setOnMousePressed(e -> {
@@ -184,10 +202,12 @@ public class Main extends Application {
         //Layouts marcador-etiquetas:
         HBox layoutMarcador = new HBox(20);
         layoutMarcador.setAlignment(Pos.CENTER);
+        layoutMarcador.autosize();
         layoutMarcador.getChildren().addAll(botonMarcadorPareja1, botonMarcadorPareja2);
         
         HBox layoutEtiquetas = new HBox(20);
         layoutEtiquetas.setAlignment(Pos.CENTER);
+        layoutMarcador.autosize();
         layoutEtiquetas.getChildren().addAll(labelPareja1, labelPareja2);
         
         HBox layoutDeshacer = new HBox(20);
@@ -207,7 +227,7 @@ public class Main extends Application {
         );
         return pagina;
     }
-    
+ 
     //2ª Página:
     private VBox crearPagina2(){
         //Título de la pagina2: 
@@ -224,6 +244,7 @@ public class Main extends Application {
         botonCronometro = new Button("▶");
         botonCronometro.getStyleClass().add("boton-inicio-cronometro");
         botonCronometro.setOnAction(e -> toggleCronometro());
+        
         Button botonReiniciarCronometro = new Button("↺");
         botonReiniciarCronometro.getStyleClass().add("boton-reiniciar-cronometro");
         botonReiniciarCronometro.setOnAction(e -> reiniciarCronometro());
@@ -277,28 +298,28 @@ public class Main extends Application {
         bTotalPartidos.getStyleClass().add("container-estadisticas");
         bTotalPartidos.getChildren().addAll(lTotalPartidos, labelTotalPartidos);
         
-        //Victorias:
-        Label lVictorias = new Label("VICTORIAS");
-        lVictorias.getStyleClass().add("label-estadisticas");
+        //Victorias y derrotas:
+        Label lResultados = new Label("RESULTADOS");
+        lResultados.getStyleClass().add("label-estadisticas");
         
-        labelVictoriasPareja1 = new Label("0");
-        labelVictoriasPareja1.getStyleClass().add("valor-numerico-estadisticas");
+        labelVictorias = new Label("0");
+        labelVictorias.getStyleClass().add("valor-numerico-estadisticas");
         
         Label lSeparador = new Label(" - ");
         lSeparador.getStyleClass().add("separador-valores");
         
-        labelVictoriasPareja2 = new Label("0");
-        labelVictoriasPareja2.getStyleClass().add("valor-numerico-estadisticas");
+        labelDerrotas = new Label("0");
+        labelDerrotas.getStyleClass().add("valor-numerico-estadisticas");
         
-        //Layout victorias:
-        HBox bVictoriasValores = new HBox(15);
-        bVictoriasValores.setAlignment(Pos.CENTER);
-        bVictoriasValores.getChildren().addAll(labelVictoriasPareja1, lSeparador, labelVictoriasPareja2);
+        //Layout victorias y derrotas:
+        HBox bResultadosValores = new HBox(15);
+        bResultadosValores.setAlignment(Pos.CENTER);
+        bResultadosValores.getChildren().addAll(labelVictorias, lSeparador, labelDerrotas);
         
-        VBox bVictorias = new VBox(5);
-        bVictorias.setAlignment(Pos.CENTER);
-        bVictorias.getStyleClass().add("container-estadisticas");
-        bVictorias.getChildren().addAll(lVictorias, bVictoriasValores);
+        VBox bResultados = new VBox(5);
+        bResultados.setAlignment(Pos.CENTER);
+        bResultados.getStyleClass().add("container-estadisticas");
+        bResultados.getChildren().addAll(lResultados, bResultadosValores);
         
         //Duración media de partidos:
         Label lDuracion = new Label("DURACIÓN MEDIA");
@@ -312,20 +333,7 @@ public class Main extends Application {
         bDuracion.setAlignment(Pos.CENTER);
         bDuracion.getStyleClass().add("container-estadisticas");
         bDuracion.getChildren().addAll(lDuracion, labelDuracionMedia);
-        
-        //Conteo de los puntos totales:
-        Label lPuntos = new Label("TOTAL PUNTOS JUGADOS");
-        lPuntos.getStyleClass().add("label-estadisticas");
-        
-        labelTotalPuntos = new Label("0");
-        labelTotalPuntos.getStyleClass().add("valor-numerico-estadisticas");
-        
-        //Layout Puntos totales:
-        VBox bPuntos = new VBox(5);
-        bPuntos.setAlignment(Pos.CENTER);
-        bPuntos.getStyleClass().add("container-estadisticas");
-        bPuntos.getChildren().addAll(lPuntos, labelTotalPuntos);
-        
+           
         //Layout principal:
         VBox pagina = new VBox(18);
         pagina.setAlignment(Pos.CENTER);
@@ -333,9 +341,8 @@ public class Main extends Application {
         pagina.getChildren().addAll(
             titulo,
             bTotalPartidos,
-            bVictorias,
-            bDuracion,
-            bPuntos
+            bResultados,
+            bDuracion
         );
         return pagina;
     }
@@ -351,11 +358,10 @@ public class Main extends Application {
         int totalPuntos = db.getPuntosTotales();
         
         labelTotalPartidos.setText(String.valueOf(totalPartidos));
-        labelVictoriasPareja1.setText(String.valueOf(victoriasPareja1));
-        labelVictoriasPareja2.setText(String.valueOf(victoriasPareja2));
-        labelTotalPuntos.setText(String.valueOf(totalPuntos));
+        labelVictorias.setText(String.valueOf(victoriasPareja1));
+        labelDerrotas.setText(String.valueOf(victoriasPareja2));
         
-        //Conversión de la duración media del partido a mm:ss :
+        //Conversión de la duración media del partido a "mm:ss" :
         int minutos = duracionMedia / 60;
         int segundos = duracionMedia % 60;
         labelDuracionMedia.setText(String.format("%02d:%02d", minutos, segundos));
@@ -365,13 +371,15 @@ public class Main extends Application {
     private void irPagina(int pagina){
         paginaActual = pagina;
         //Actualizamos la pagina visible:
-        if (pagina == 0){
-            pagina1.toFront();  
-        } else if (pagina == 1){
-            pagina2.toFront();
-        } else if (pagina == 2){
-            pagina3.toFront();
-            actualizarEstadisticas();
+        switch (pagina) {
+            case 0 -> pagina1.toFront();
+            case 1 -> pagina2.toFront();
+            case 2 -> {
+                pagina3.toFront();
+                actualizarEstadisticas();
+            }
+            default -> {
+            }
         }
         punto1.getStyleClass().setAll(pagina == 0 ? "punto-navegacion-dinamico" : "punto-navegacion");
         punto2.getStyleClass().setAll(pagina == 1 ? "punto-navegacion-dinamico" : "punto-navegacion");
@@ -382,9 +390,15 @@ public class Main extends Application {
     private void toggleCronometro(){
         if (cronometroActivo){
             cronometro.pause();
+            cronometroActivo = false;
             botonCronometro.setText("▶");
             botonCronometro.getStyleClass().setAll("boton-inicio-cronometro");
-        } else{
+        } else {
+            //Creamos partido en la BBDD si es la primera vez:
+            if (totalSegundos == 0) {
+                partido.iniciarPartido();
+            }
+            //Inicio de partido:
             cronometro.play();
             botonCronometro.setText("⏸");
             botonCronometro.getStyleClass().setAll("boton-pausa-cronometro");
@@ -459,6 +473,10 @@ public class Main extends Application {
     //Verificamos el ganador:
     private void verificarGanador(){
         if (partido.ganador()){
+            if (cronometroActivo) {
+                cronometro.pause();
+                cronometroActivo = false;
+            }
             //Finalizamos en BBDD:
             partido.finalizarPartidoBD();
             
@@ -490,6 +508,7 @@ public class Main extends Application {
     //Método par reiniciar el marcador:
     private void reiniciar(){
         partido.reiniciar();
+        reiniciarCronometro(); 
         //Reiniciamos las clases CSS:
         labelJuegos.getStyleClass().setAll("label-juegos");
         actualizarMarcador();
