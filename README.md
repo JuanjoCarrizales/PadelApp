@@ -262,19 +262,19 @@ La app automáticamente crea una base de datos con las siguientes tablas:
 
 ### **Página 1: Marcador**
 
-!\[Marcador](docs/Captura\_página1\_marcador.png)
+![Marcador](docs/Captura\_página1\_marcador.png)
 
 *Interfaz principal con marcador de puntos, juegos, sets y botón de deshacer.*
 
 ### **Página 2: Cronómetro**
 
-!\[Cronómetro](docs/Captura\_página2\_cronómetro.png)
+![Cronómetro](docs/Captura\_página2\_cronómetro.png)
 
 *Cronómetro con contador de kcal.*
 
 ### **Página 3: Estadísticas**
 
-!\[Estadísticas](docs/Captura\_página3\_estadísticas.png)
+![Estadísticas](docs/Captura\_página3\_estadísticas.png)
 
 *Breve resumen de: total de partidos jugados, victorias, derrotas y duración media de los partidos.*
 
