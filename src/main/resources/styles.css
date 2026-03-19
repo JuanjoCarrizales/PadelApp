@@ -52,6 +52,7 @@
     -fx-font-size: 3.5em;
     -fx-font-weight: bold;
     -fx-text-fill: white;
+    -fx-alignment: center;
     -fx-background-color: #818182;
     -fx-background-radius: 20;
     -fx-cursor: hand;
@@ -60,6 +61,11 @@
 }
 .boton-marcador:hover{
     -fx-background-color: #909091;
+}
+.boton-marcador:disabled{
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+    -fx-alignment: center;
 }
 
 /*Color "puntos" inferiores de navegación*/
@@ -93,7 +99,7 @@
 /*2ª Página:*/
 /*Color 2n titulo:*/
 .titulo2{
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.56em;
     -fx-font-weight: bold;
     -fx-text-fill: #f1c40f;
 }

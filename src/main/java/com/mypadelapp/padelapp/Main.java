@@ -13,6 +13,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -52,6 +54,7 @@ public class Main extends Application {
     private VBox pagina1;
     private VBox pagina2;
     private VBox pagina3;
+    private VBox lPrincipal;
     private Circle punto1;
     private Circle punto2;
     private Circle punto3;
@@ -102,30 +105,66 @@ public class Main extends Application {
         gestos(puntos);
         
         //Layout principal:
-        VBox lPrincipal = new VBox(10);
+        lPrincipal = new VBox(10);
         lPrincipal.setAlignment(Pos.CENTER);
         lPrincipal.getStyleClass().add("fondo-principal");
         lPrincipal.getChildren().addAll(contenedor, puntos);
         
         Scene scene = new Scene(lPrincipal, 480, 560);
-        //Escalado global:
-        lPrincipal.setStyle("-fx-font-size: " + (scene.getWidth() / 30) + "px;");
-        //Listener de actualización:
+        //Escalado global (con respecto ASPECT_RATIO):
+        actualizarEscalado(scene.getWidth(), scene.getHeight());
+        
+        //Listener de actualización (SOLO del width):
         scene.widthProperty().addListener((obs, oldval, newVal) -> {
-            double fontSize = newVal.doubleValue() / 30;
-            lPrincipal.setStyle("-fx-font-size: " + fontSize + "px;");
+            actualizarEscalado(newVal.doubleValue(), scene.getHeight());
         });
-        scene.heightProperty().addListener((obs, oldval, newVal) -> {
-            double fontSize = newVal.doubleValue() / 30;
-            lPrincipal.setStyle("-fx-font-size: " + fontSize + "px;");
+        scene.widthProperty().addListener((obs, oldval, newVal) -> {
+            actualizarEscalado(scene.getWidth(), newVal.doubleValue());
         });
+        
         scene.getStylesheets().add(
             //Cargamos el CSS:
             getClass().getResource("/styles.css").toExternalForm()
         );
         
         primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(375);
+        
+        final double ASPECT_RATIO = 4.0 / 5.0;
+        final boolean[] ajustando = {false};
+        
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (!ajustando[0]) {
+                ajustando[0] = true;
+                double newWidth = newVal.doubleValue();
+                double newHeight = newWidth / ASPECT_RATIO;             
+                primaryStage.setHeight(newHeight);
+                ajustando[0] = false;
+            } 
+        });
+        
+        primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (!ajustando[0]) {
+                ajustando[0] = true;
+                double newHeight = newVal.doubleValue();
+                double newWidth = newHeight * ASPECT_RATIO;             
+                primaryStage.setWidth(newWidth);
+                ajustando[0] = false;
+            }
+        });
+        
         primaryStage.show();
+    }
+    
+    private void actualizarEscalado(double width, double height) {
+        double minDimension = Math.min(width / 30, height / 35);
+        double espaciado = Math.max(2, height * 0.015);
+        lPrincipal.setSpacing(espaciado);
+        
+        double padding = Math.max(3, height * 0.01);
+        lPrincipal.setStyle("-fx-font-size: " + minDimension + "px; -fx-padding: " + padding + ";");   
     }
     
     //Hacer los botones responsivos:
@@ -175,10 +214,12 @@ public class Main extends Application {
         botonMarcadorPareja1 = new Button("0");
         botonMarcadorPareja1.getStyleClass().add("boton-marcador");
         botonMarcadorPareja1.setOnAction(e -> puntoPareja1());
+        botonMarcadorPareja1.setDisable(true);
         
         botonMarcadorPareja2 = new Button("0");
         botonMarcadorPareja2.getStyleClass().add("boton-marcador");
         botonMarcadorPareja2.setOnAction(e -> puntoPareja2());
+        botonMarcadorPareja2.setDisable(true);
 
         //Botón de deshacer:
         botonDeshacer = new Button("↶");
@@ -215,7 +256,7 @@ public class Main extends Application {
         layoutDeshacer.getChildren().addAll(botonDeshacer);
 
         //Layout pagina:
-        VBox pagina = new VBox(22);
+        VBox pagina = new VBox(10);
         pagina.setAlignment(Pos.CENTER);
         pagina.getStyleClass().add("fondo-pagina");
         pagina.getChildren().addAll(
@@ -245,13 +286,13 @@ public class Main extends Application {
         botonCronometro.getStyleClass().add("boton-inicio-cronometro");
         botonCronometro.setOnAction(e -> toggleCronometro());
         
-        Button botonReiniciarCronometro = new Button("↺");
-        botonReiniciarCronometro.getStyleClass().add("boton-reiniciar-cronometro");
-        botonReiniciarCronometro.setOnAction(e -> reiniciarCronometro());
+        Button botonReinicorCompleto = new Button("↺");
+        botonReinicorCompleto.getStyleClass().add("boton-reiniciar-cronometro");
+        botonReinicorCompleto.setOnAction(e -> reinicioCompleto());
         
         HBox lBotonesCronometro = new HBox(15);
         lBotonesCronometro.setAlignment(Pos.CENTER);
-        lBotonesCronometro.getChildren().addAll(botonCronometro, botonReiniciarCronometro);
+        lBotonesCronometro.getChildren().addAll(botonCronometro, botonReinicorCompleto);
         
         //Label de Kcal:
         Label tituloKcal = new Label("Kcal quemadas");
@@ -266,7 +307,7 @@ public class Main extends Application {
         cronometro.setCycleCount(Timeline.INDEFINITE);
         
         //Layout pagina:
-        VBox pagina = new VBox(22);
+        VBox pagina = new VBox(10);
         pagina.setAlignment(Pos.CENTER);
         pagina.getStyleClass().add("fondo-pagina");
         pagina.getChildren().addAll(
@@ -302,19 +343,28 @@ public class Main extends Application {
         Label lResultados = new Label("RESULTADOS");
         lResultados.getStyleClass().add("label-estadisticas");
         
+        Label lTusVictorias = new Label("Tus victorias:");
+        lTusVictorias.getStyleClass().add("valor-numerico-estadisticas");
         labelVictorias = new Label("0");
         labelVictorias.getStyleClass().add("valor-numerico-estadisticas");
         
-        Label lSeparador = new Label(" - ");
-        lSeparador.getStyleClass().add("separador-valores");
-        
+        Label lTusDerrotas = new Label("Tus derrotas:");
+        lTusDerrotas.getStyleClass().add("valor-numerico-estadisticas");
         labelDerrotas = new Label("0");
         labelDerrotas.getStyleClass().add("valor-numerico-estadisticas");
         
         //Layout victorias y derrotas:
-        HBox bResultadosValores = new HBox(15);
+        HBox bVictorias = new HBox(10);
+        bVictorias.setAlignment(Pos.CENTER);
+        bVictorias.getChildren().addAll(lTusVictorias, labelVictorias);
+        
+        HBox bDerrotas = new HBox(10);
+        bDerrotas.setAlignment(Pos.CENTER);
+        bDerrotas.getChildren().addAll(lTusDerrotas, labelDerrotas);
+        
+        VBox bResultadosValores = new VBox(8);
         bResultadosValores.setAlignment(Pos.CENTER);
-        bResultadosValores.getChildren().addAll(labelVictorias, lSeparador, labelDerrotas);
+        bResultadosValores.getChildren().addAll(bVictorias, bDerrotas);
         
         VBox bResultados = new VBox(5);
         bResultados.setAlignment(Pos.CENTER);
@@ -335,7 +385,7 @@ public class Main extends Application {
         bDuracion.getChildren().addAll(lDuracion, labelDuracionMedia);
            
         //Layout principal:
-        VBox pagina = new VBox(18);
+        VBox pagina = new VBox(10);
         pagina.setAlignment(Pos.CENTER);
         pagina.getStyleClass().add("fondo-pagina");
         pagina.getChildren().addAll(
@@ -353,13 +403,13 @@ public class Main extends Application {
         
         int totalPartidos = db.getTotalPartidos();
         int victoriasPareja1 = db.getVictoriasPareja1();
-        int victoriasPareja2 = db.getVictoriasPareja2();
+        int derrotasPareja1 = db.getDerrotasPareja1();
         int duracionMedia = db.getDuracionMedia();
         int totalPuntos = db.getPuntosTotales();
         
         labelTotalPartidos.setText(String.valueOf(totalPartidos));
         labelVictorias.setText(String.valueOf(victoriasPareja1));
-        labelDerrotas.setText(String.valueOf(victoriasPareja2));
+        labelDerrotas.setText(String.valueOf(derrotasPareja1));
         
         //Conversión de la duración media del partido a "mm:ss" :
         int minutos = duracionMedia / 60;
@@ -393,6 +443,10 @@ public class Main extends Application {
             cronometroActivo = false;
             botonCronometro.setText("▶");
             botonCronometro.getStyleClass().setAll("boton-inicio-cronometro");
+            //Deshabilitamos los botones del marcador:
+            botonMarcadorPareja1.setDisable(true);
+            botonMarcadorPareja2.setDisable(true);
+            botonDeshacer.setDisable(true);
         } else {
             //Creamos partido en la BBDD si es la primera vez:
             if (totalSegundos == 0) {
@@ -400,10 +454,14 @@ public class Main extends Application {
             }
             //Inicio de partido:
             cronometro.play();
+            cronometroActivo = true;
             botonCronometro.setText("⏸");
             botonCronometro.getStyleClass().setAll("boton-pausa-cronometro");
+            //Habilitamos los botones del marcador:
+            botonMarcadorPareja1.setDisable(false);
+            botonMarcadorPareja2.setDisable(false); 
+            actualizarBotonDeshacer();
         }
-        cronometroActivo =! cronometroActivo;
     }
 
     private void actualizarCronometro(){
@@ -425,21 +483,11 @@ public class Main extends Application {
         actualizarCronometro();
     }
     
-    private void reiniciarCronometro(){
-        cronometro.stop();
-        cronometroActivo = false;
-        totalSegundos = 0;
-        botonCronometro.setText("▶");
-        botonCronometro.getStyleClass().setAll("boton-inicio-cronometro");
-        labelCronometro.setText("00:00:00");
-        labelKcal.setText("0kcal");
-    }
-
     //Método cuando pareja 1 gane un punto:
     private void puntoPareja1(){
         partido.addPuntoPareja1();
         actualizarMarcador();
-        actualizarBotonesDeshacer();
+        actualizarBotonDeshacer();
         verificarGanador();
     }
     
@@ -447,7 +495,7 @@ public class Main extends Application {
     private void puntoPareja2(){
         partido.addPuntoPareja2();
         actualizarMarcador();
-        actualizarBotonesDeshacer();
+        actualizarBotonDeshacer();
         verificarGanador();
     }
     
@@ -495,24 +543,77 @@ public class Main extends Application {
     private void deshacer(){
         if (partido.deshacer()){
             actualizarMarcador();
-            actualizarBotonesDeshacer();
+            actualizarBotonDeshacer();
         }
     }
     
     //Método para actualizar el estado de los botonea de deshacer:
-    private void actualizarBotonesDeshacer(){
+    private void actualizarBotonDeshacer(){
         boolean historial = partido.historial();
         botonDeshacer.setDisable(!historial);
     }
     
-    //Método par reiniciar el marcador:
-    private void reiniciar(){
+    //Método para el reinicio del partido (manual):
+    private void reinicioCompleto(){
+        //Paramos el cronometro cuando le damos al botón de reinicio:
+        boolean  cronoEmpezado = cronometroActivo;
+        if (cronometroActivo) {
+            cronometro.pause();
+            cronometroActivo = false;
+        }
+        //Mensaje de alerta tras darle al botón de reinicio:
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Reiniciar Partido");
+        alerta.setHeaderText("¿Quieres reiniciar el partido?");
+        alerta.setContentText("Se perderán todos los datos del partido actual.\n¿Quieres continuar?");
+        
+        //Botones de confirmación:
+        ButtonType botonSi = new ButtonType("Continuar");
+        ButtonType botonNo = new ButtonType("Deshacer", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alerta.getButtonTypes().setAll(botonSi, botonNo);
+        
+        alerta.showAndWait().ifPresent(response -> {
+            if (response == botonSi){
+                reiniciarTodo();
+            } else {
+                if (cronoEmpezado) {
+                    cronometro.play();
+                    cronometroActivo = true;
+                    botonCronometro.setText("⏸");
+                    botonCronometro.getStyleClass().setAll("boton-inicio-cronometro");
+                }
+            }
+        });
+    }
+
+    //Método para reiniciar cronómetro + marcador (manual):
+    private void reiniciarTodo() {
+        cronometro.stop();
+        totalSegundos = 0;
+        cronometroActivo = false;
+        botonCronometro.setText("▶");
+        botonCronometro.getStyleClass().setAll("boton-inicio-cronometro");
+        labelCronometro.setText("00:00:00");
+        labelKcal.setText("0kcal");
+        
         partido.reiniciar();
-        reiniciarCronometro(); 
-        //Reiniciamos las clases CSS:
+        
+        //Reinicio de la interfaz:
+        labelSets.getStyleClass().setAll("label-sets");
         labelJuegos.getStyleClass().setAll("label-juegos");
+        botonMarcadorPareja1.getStyleClass().setAll("boton-marcador");
+        botonMarcadorPareja2.getStyleClass().setAll("boton-marcador");
         actualizarMarcador();
-        actualizarBotonesDeshacer();
+        actualizarBotonDeshacer();
+        
+        //Deshabilitar los botones del marcador:
+        botonMarcadorPareja1.setDisable(true);
+        botonMarcadorPareja2.setDisable(true);
+    }
+    
+    //Método para reiniciar el marcador (automático):
+    private void reiniciar(){
+        reiniciarTodo();
     }
     
     public static void main(String[] args){

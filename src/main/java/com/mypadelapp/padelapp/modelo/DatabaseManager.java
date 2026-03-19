@@ -74,24 +74,11 @@ public class DatabaseManager {
                 fecha_creacion TEXT
             )
         """;
-        
-        String sqlPartidoJugadores = """
-            CREATE TABLE IF NOT EXISTS partido_jugadores (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                partido_id INTEGER NOT NULL,
-                jugador_id INTEGER,
-                pareja INTEGER NOT NULL,
-                posicion INTEGER NOT NULL,
-                FOREIGN KEY (partido_id) REFERENCES partidos(id),
-                FOREIGN KEY (jugador_id) REFERENCES jugadores(id)
-            )
-        """;
-        
+    
         Statement sentencia = conexion.createStatement();
         sentencia.execute(sqlPartidos);
         sentencia.execute(sqlPuntos);
         sentencia.execute(sqlJugadores);
-        sentencia.execute(sqlPartidoJugadores);
         sentencia.close();
         
         System.out.println("Tablas creadas/verificadas");
@@ -112,14 +99,7 @@ public class DatabaseManager {
         
         ResultSet resultado = pstatement.getGeneratedKeys();
         if (resultado.next()){
-            int idPartido = resultado.getInt(1);
-            //Vinculación del jugador principal (yo) como la Pareja1, posición1:
-            vincularJugadorPartido(idPartido, 1, 1, 1);
-            //El resto de jugadores sin asignar:
-            vincularJugadorPartido(idPartido, null, 1, 2);//Pareja1, posición2
-            vincularJugadorPartido(idPartido, null, 2, 1);//Pareja2, posición1
-            vincularJugadorPartido(idPartido, null, 2, 2);//Pareja2, posición2
-            
+            int idPartido = resultado.getInt(1);           
             System.out.println("ID de partido: " + idPartido);
             return idPartido;
         }
@@ -196,23 +176,7 @@ public class DatabaseManager {
             return 1;
         }
     }
-    
-    //Vinculación de un jugador a un partido:
-    private void  vincularJugadorPartido(int partidoId, Integer jugadorId, int pareja, int posicion) throws SQLException {
-        String sql = "INSERT INTO partido_jugadores (partido_id, jugador_id, pareja, posicion)" +
-                     "VALUES (?, ?, ?, ?)";
-        PreparedStatement pstatement = conexion.prepareStatement(sql);
-        pstatement.setInt(1, partidoId);
-        if (jugadorId != null) {
-            pstatement.setInt(2, jugadorId);
-        } else {
-            pstatement.setNull(2, java.sql.Types.INTEGER);
-        }
-        pstatement.setInt(3, pareja);
-        pstatement.setInt(4, posicion);
-        pstatement.executeUpdate();
-    }
-    
+  
     //Cerramos la conexión:
     public void cerrarConexion(){
         try {
@@ -238,59 +202,7 @@ public class DatabaseManager {
         }
         return 0;
     }
-    
-    //Estadísitcas del jugador principal (yo):
-    //Total partidos jugados jugador1:
-    public int getTotalPartidosJugador() {
-        try {
-            String sql = "SELECT COUNT(DISTINCT p.id) FROM partidos p " + 
-                         "JOIN partido_jugadores pj ON p.id = pj.partido_id " +
-                         "WHERE p.partido_finalizado = 1 AND pj.jugador_id = 1";
-            Statement sentencia = conexion.createStatement();
-            ResultSet resultado = sentencia.executeQuery(sql);
-            if (resultado.next()) {
-                return resultado.getInt(1);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener el total de partidos: " + e.getMessage());
-        }
-        return 0;
-    }
-    
-    //Total voctorias jugador1:
-    public int getVictoriasJugador() {
-         try {
-            String sql = "SELECT COUNT(DISTINCT p.id) FROM partidos p " + 
-                         "JOIN partido_jugadores pj ON p.id = pj.partido_id " +
-                         "WHERE p.partido_finalizado = 1 AND pj.jugador_id = 1 AND pj.pareja = p.ganador";
-            Statement sentencia = conexion.createStatement();
-            ResultSet resultado = sentencia.executeQuery(sql);
-            if (resultado.next()) {
-                return resultado.getInt(1);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener el total de victorias del jugador1: " + e.getMessage());
-        }
-        return 0;
-    }
-    
-    //Total derrotas jugador1:
-    public int getDerrotasJugador() {
-         try {
-            String sql = "SELECT COUNT(DISTINCT p.id) FROM partidos p " + 
-                         "JOIN partido_jugadores pj ON p.id = pj.partido_id " +
-                         "WHERE p.partido_finalizado = 1 AND pj.jugador_id = 1 AND pj.pareja != p.ganador";
-            Statement sentencia = conexion.createStatement();
-            ResultSet resultado = sentencia.executeQuery(sql);
-            if (resultado.next()) {
-                return resultado.getInt(1);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener el total de derrotas del jugador1: " + e.getMessage());
-        }
-        return 0;
-    }
-    
+  
     //Obtenemos Nº de victorias de la pareja 1:
     public int getVictoriasPareja1(){
         try {
@@ -306,7 +218,7 @@ public class DatabaseManager {
     }
     
     //Obtenemos Nº de victorias de la pareja 2:
-    public int getVictoriasPareja2(){
+    public int getDerrotasPareja1(){
         try {
             Statement sentencia = conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1 AND ganador = 2");
